@@ -1,0 +1,22 @@
+name: lint
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: set up python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.12'
+
+    - name: install Python dependencies
+      run: pip install bandit flake8 pyright
+
+    - name: run flake8
+      run: flake8 --show-source watson/ tests/ scripts/
