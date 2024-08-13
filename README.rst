@@ -2,6 +2,9 @@
 
 |Build Status| |PyPI Latest Version| |Requires.io|
 
+Community fork of https://github.com/TailorDev/Watson
+-------------------------------------------------------------------------
+
 Watson is here to help you manage your time. You want to know how
 much time you are spending on your projects? You want to generate a nice
 report for your client? Watson is here for you.
