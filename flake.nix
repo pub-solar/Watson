@@ -5,7 +5,6 @@
 
   inputs.devshell.url = "github:numtide/devshell";
   inputs.devshell.inputs.nixpkgs.follows = "nixpkgs";
-  inputs.devshell.inputs.systems.follows = "systems";
 
   outputs = {self, nixpkgs, systems, devshell }:
     let
