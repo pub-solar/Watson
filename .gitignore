@@ -4,6 +4,7 @@
 # directories
 
 build/
+data/
 .cache/
 dist/
 docs/_gh-pages
