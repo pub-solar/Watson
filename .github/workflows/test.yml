@@ -1,10 +1,7 @@
 name: test
 
 on:
-  push:
-    branches-ignore:
-      - 'dependabot/**'
-  pull_request:
+  - push
 
 jobs:
   test:
