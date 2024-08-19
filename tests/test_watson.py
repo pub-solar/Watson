@@ -698,9 +698,9 @@ def test_pull(mocker, watson):
 
     assert watson.frames[0].id == '1c006c6e6cc14c80ab22b51c857c0b06'
     assert watson.frames[0].project == 'foo'
-    assert watson.frames[0].start.int_timestamp == 4003
-    assert watson.frames[0].stop.int_timestamp == 4004
-    assert watson.frames[0].tags == ['A']
+    assert watson.frames[0].start.int_timestamp == 4001
+    assert watson.frames[0].stop.int_timestamp == 4002
+    assert watson.frames[0].tags == ['A', 'B']
 
     assert watson.frames[1].id == 'c44aa8154d774a58bddd1afa95562141'
     assert watson.frames[1].project == 'bar'
