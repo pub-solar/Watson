@@ -452,18 +452,18 @@ class Watson(object):
                 json.dump(frames, f, indent=2)
 
             # Check if anything has changed
+            cwd = self.sync_dir
             try:
-                command = ['git', 'diff', '--quiet']
-                subprocess.run(command, cwd=self.sync_dir, check=True)
+                subprocess.run(['git', 'add', 'frames'], cwd=cwd, check=True)
+                command = ['git', 'diff', '--staged', '--quiet']
+                subprocess.run(command, cwd=cwd, check=True)
                 return 0
             except subprocess.CalledProcessError:
                 pass
 
             # git push
-            cwd = self.sync_dir
             updated = len(frames) - n_frames
             msg = f'Add {updated} frames ({datetime.datetime.now()})'
-            subprocess.run(['git', 'add', 'frames'], cwd=cwd, check=True)
             subprocess.run(['git', 'commit', '-m', msg], cwd=cwd, check=True)
             subprocess.run(['git', 'push'], cwd=cwd, check=True)
 
