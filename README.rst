@@ -86,8 +86,8 @@ License
 Watson is released under the MIT License. See the bundled LICENSE file for
 details.
 
-.. |Build Status| image:: https://github.com/pub-solar/Watson/actions/workflows/ci.yml/badge.svg
-   :target: https://github.com/pub-solar/Watson/actions/workflows/ci.yml
+.. |Build Status| image:: https://github.com/pub-solar/Watson/actions/workflows/test.yml/badge.svg
+   :target: https://github.com/pub-solar/Watson/actions/workflows/test.yml
 .. |PyPI Latest Version| image:: https://img.shields.io/pypi/v/td-watson.svg
    :target: https://pypi.python.org/pypi/td-watson
 .. |Requires.io| image:: https://requires.io/github/TailorDev/Watson/requirements.svg?branch=master
