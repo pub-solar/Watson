@@ -10,7 +10,7 @@ import click
 import subprocess
 
 from .config import ConfigParser
-from .frames import Frames
+from .frames import Frames, set_hour_shift
 from .utils import deduplicate, make_json_writer, safe_save, sorted_groupby
 from .version import version as __version__  # noqa
 
@@ -65,6 +65,8 @@ class Watson(object):
 
         if 'last_sync' in kwargs:
             self.last_sync = kwargs['last_sync']
+
+        set_hour_shift(self.config.getint('options', 'day_start_hour', 0))
 
     def _load_json_file(self, filename, type=dict):
         """
@@ -533,6 +535,10 @@ class Watson(object):
                            if _ is not None):
             from_ = start_time
 
+        if from_ == from_.floor('day'):
+            hour_shift = self.config.getint('options', 'day_start_hour', 0)
+            from_ = from_.shift(hours=hour_shift)
+
         if not self._validate_report_options(projects, ignore_projects):
             raise WatsonError(
                 "given projects can't be ignored at the same time")
@@ -551,9 +557,8 @@ class Watson(object):
             self.frames.add(cur['project'], cur['start'], arrow.utcnow(),
                             cur['tags'], id="current")
 
-        day_start_hour = self.config.getint('options', 'day_start_hour', 0)
-        span = self.frames.span(from_, to, day_start_hour)
-
+        span = self.frames.span(from_, to)
+        
         frames_by_project = sorted_groupby(
             self.frames.filter(
                 projects=projects or None, tags=tags or None,
