@@ -894,7 +894,7 @@ def aggregate(ctx, watson, current, from_, to, projects, tags, output_format,
             end = start + datetime.timedelta(days=6)
             aggregation_ranges.append((start, end))
             start += datetime.timedelta(days=7)
-    else: # daily
+    else:  # daily
         delta = (to - from_).days
         for i in range(delta + 1):
             offset = datetime.timedelta(days=i)
