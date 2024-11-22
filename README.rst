@@ -1,8 +1,8 @@
-.. image:: https://tailordev.github.io/Watson/img/logo-watson-600px.png
+.. image:: https://jazzband.github.io/Watson/img/logo-watson-600px.png
 
-|Build Status| |PyPI Latest Version| |Requires.io|
+|Build Status|
 
-Community fork of https://github.com/TailorDev/Watson
+Community fork of https://github.com/jazzband/Watson
 -------------------------------------------------------------------------
 
 Watson is here to help you manage your time. You want to know how
@@ -39,7 +39,7 @@ or:
 
   $ pip3 install td-watson
 
-If you need more details about installing watson, please refer to the `documentation <https://tailordev.github.io/Watson>`_.
+If you need more details about installing watson, please refer to the `documentation <https://jazzband.github.io/Watson>`_.
 
 Usage
 ~~~~~
@@ -67,9 +67,9 @@ You can log your latest working sessions (aka **frames**) thanks to the ``log`` 
   Tuesday 26 January 2016 (8m 32s)
         ffb2a4c  13:00 to 13:08      08m 32s   world-domination  [cats]
 
-Please note that, as `the report command <https://tailordev.github.io/Watson/user-guide/commands/#report>`_, the ``log`` command comes with projects, tags and dates filtering.
+Please note that, as `the report command <https://jazzband.github.io/Watson/user-guide/commands/#report>`_, the ``log`` command comes with projects, tags and dates filtering.
 
-To list all available commands, either `read the documentation <https://tailordev.github.io/Watson>`_ or use:
+To list all available commands, either `read the documentation <https://jazzband.github.io/Watson>`_ or use:
 
 .. code:: bash
 
@@ -78,7 +78,7 @@ To list all available commands, either `read the documentation <https://tailorde
 Contributor Code of Conduct
 ---------------------------
 
-If you want to contribute to this project, please read the project `Contributor Code of Conduct <https://tailordev.github.io/Watson/contributing/coc/>`_
+If you want to contribute to this project, please read the project `Contributor Code of Conduct <https://jazzband.github.io/Watson/contributing/coc/>`_
 
 License
 -------
@@ -86,12 +86,7 @@ License
 Watson is released under the MIT License. See the bundled LICENSE file for
 details.
 
-.. |Build Status| image:: https://travis-ci.org/TailorDev/Watson.svg?branch=master
-   :target: https://travis-ci.org/TailorDev/Watson
-.. |PyPI Latest Version| image:: https://img.shields.io/pypi/v/td-watson.svg
-   :target: https://pypi.python.org/pypi/td-watson
-.. |Requires.io| image:: https://requires.io/github/TailorDev/Watson/requirements.svg?branch=master
-   :target: https://requires.io/github/TailorDev/Watson/requirements/?branch=master
-   :alt: Requirements Status
-.. |Watson screenshot| image:: https://tailordev.github.io/Watson/img/watson-demo.gif
+.. |Build Status| image:: https://github.com/pub-solar/Watson/actions/workflows/test.yml/badge.svg
+   :target: https://github.com/pub-solar/Watson/actions/workflows/test.yml
+.. |Watson screenshot| image:: https://jazzband.github.io/Watson/img/watson-demo.gif
 .. _Watson screenshot: https://asciinema.org/a/35918

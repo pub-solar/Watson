@@ -31,6 +31,12 @@
             devshell.packages = with pkgs; [
               gnumake
               virtualenv
+              (pkgs.python3.withPackages (p: [
+                # select Python packages here
+                p.python-lsp-ruff
+                p.python-lsp-server
+                p.python-lsp-server.optional-dependencies
+              ]))
             ];
           };
         });
