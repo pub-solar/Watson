@@ -10,7 +10,7 @@ import click
 import subprocess
 
 from .config import ConfigParser
-from .frames import Frames, set_hour_shift
+from .frames import Frames, set_hour_shift, shifted_floor
 from .utils import deduplicate, make_json_writer, safe_save, sorted_groupby
 from .version import version as __version__  # noqa
 
@@ -536,8 +536,7 @@ class Watson(object):
             from_ = start_time
 
         if from_ == from_.floor('day'):
-            hour_shift = self.config.getint('options', 'day_start_hour', 0)
-            from_ = from_.shift(hours=hour_shift)
+            from_ = shifted_floor(from_, 'day')
 
         if not self._validate_report_options(projects, ignore_projects):
             raise WatsonError(
