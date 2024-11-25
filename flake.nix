@@ -7,7 +7,8 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
   };
 
-  outputs = inputs@{ self, ... }:
+  outputs =
+    inputs@{ self, ... }:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
       systems = [
         "x86_64-linux"
@@ -17,32 +18,41 @@
       ];
 
       perSystem =
-        args@{ pkgs, config, system, ... }: {
+        args@{
+          pkgs,
+          config,
+          system,
+          ...
+        }:
+        {
           packages = {
             watson-td = pkgs.python3Packages.buildPythonPackage {
               name = "watson-td";
-              src = ./.;
-              propagatedBuildInputs = with pkgs.python3Packages; [
-                # requirements
-                click
-                click-didyoumean
-                requests
-                arrow
 
-                # requirements-dev
-                flake8
-                py
-                pytest
-                pytest-datafiles
-                pytest-mock
-                pytest-runner
-              ];
+              src = ./.;
+
               postInstall = ''
                 installShellCompletion --bash --name watson watson.completion
                 installShellCompletion --zsh --name _watson watson.zsh-completion
                 installShellCompletion --fish watson.fish
               '';
-              nativeCheckInputs = with pkgs.python3Packages; [ pytestCheckHook pytest-mock mock pytest-datafiles ];
+
+              # requirements-dev.txt
+              nativeCheckInputs = with pkgs.python3Packages; [
+                pytestCheckHook
+                pytest-mock
+                mock
+                pytest-datafiles
+              ];
+
+              # requirements.txt
+              propagatedBuildInputs = with pkgs.python3Packages; [
+                click
+                click-didyoumean
+                requests
+                arrow
+              ];
+
               nativeBuildInputs = [ pkgs.installShellFiles ];
             };
           };
@@ -79,5 +89,9 @@
             ];
           };
         };
+
+      flake = {
+        formatter."x86_64-linux" = inputs.nixpkgs.legacyPackages."x86_64-linux".nixfmt-rfc-style;
+      };
     };
 }
