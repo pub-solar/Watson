@@ -36,7 +36,6 @@
                 pytest-datafiles
                 pytest-mock
                 pytest-runner
-                pytest-runner
               ];
             };
           };
@@ -67,7 +66,6 @@
                 p.pytest
                 p.pytest-datafiles
                 p.pytest-mock
-                p.pytest-runner
                 p.pytest-runner
               ]))
             ];
