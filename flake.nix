@@ -52,6 +52,7 @@
               gnumake
               virtualenv
               yaml-language-server
+              ruff
               (python3.withPackages (p: [
                 # LSP support
                 p.python-lsp-ruff
