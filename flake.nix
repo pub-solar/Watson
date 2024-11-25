@@ -37,6 +37,13 @@
                 pytest-mock
                 pytest-runner
               ];
+              postInstall = ''
+                installShellCompletion --bash --name watson watson.completion
+                installShellCompletion --zsh --name _watson watson.zsh-completion
+                installShellCompletion --fish watson.fish
+              '';
+              nativeCheckInputs = with pkgs.python3Packages; [ pytestCheckHook pytest-mock mock pytest-datafiles ];
+              nativeBuildInputs = [ pkgs.installShellFiles ];
             };
           };
 
