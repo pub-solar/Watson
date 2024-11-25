@@ -515,14 +515,14 @@ _SHORTCUT_OPTIONS_VALUES = {
               flag_value=_SHORTCUT_OPTIONS_VALUES['all'],
               mutually_exclusive=['day', 'week', 'month', 'luna', 'year'],
               help='Reports all activities.')
-@click.option('-p', '--project', 'projects', shell_complete=get_option_projects,
-              multiple=True,
+@click.option('-p', '--project', 'projects',
+              shell_complete=get_option_projects, multiple=True,
               help="Reports activity only for the given project. You can add "
               "other projects by using this option several times.")
-@click.option('-T', '--tag', 'tags', shell_complete=get_option_tags, multiple=True,
-              help="Reports activity only for frames containing the given "
-              "tag. You can add several tags by using this option multiple "
-              "times")
+@click.option('-T', '--tag', 'tags', shell_complete=get_option_tags,
+              multiple=True, help="Reports activity only for frames containing"
+              "the given tag. You can add several tags by using this option "
+              "multiple times")
 @click.option('--ignore-project', 'ignore_projects', multiple=True,
               help="Reports activity for all projects but the given ones. You "
               "can ignore several projects by using the option multiple "
@@ -785,11 +785,12 @@ def report(watson, current, from_, to, projects, tags, ignore_projects,
 @click.option('-m', '--monthly', 'aggregation', cls=MutuallyExclusiveOption,
               flag_value='monthly', mutually_exclusive=['daily', 'weekly'],
               help="Aggregate time frames by month")
-@click.option('-p', '--project', 'projects', shell_complete=get_option_projects,
-              multiple=True,
+@click.option('-p', '--project', 'projects',
+              shell_complete=get_option_projects, multiple=True,
               help="Reports activity only for the given project. You can add "
               "other projects by using this option several times.")
-@click.option('-T', '--tag', 'tags', shell_complete=get_option_tags, multiple=True,
+@click.option('-T', '--tag', 'tags', shell_complete=get_option_tags,
+              multiple=True,
               help="Reports activity only for frames containing the given "
               "tag. You can add several tags by using this option multiple "
               "times")
@@ -968,11 +969,12 @@ def aggregate(ctx, watson, current, from_, to, projects, tags, output_format,
               flag_value=_SHORTCUT_OPTIONS_VALUES['all'],
               mutually_exclusive=['day', 'week', 'month', 'year'],
               help='Reports all activities.')
-@click.option('-p', '--project', 'projects', shell_complete=get_option_projects,
-              multiple=True,
+@click.option('-p', '--project', 'projects',
+              shell_complete=get_option_projects, multiple=True,
               help="Logs activity only for the given project. You can add "
               "other projects by using this option several times.")
-@click.option('-T', '--tag', 'tags', shell_complete=get_option_tags, multiple=True,
+@click.option('-T', '--tag', 'tags', shell_complete=get_option_tags,
+              multiple=True,
               help="Logs activity only for frames containing the given "
               "tag. You can add several tags by using this option multiple "
               "times")

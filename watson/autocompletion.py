@@ -34,7 +34,8 @@ def get_projects(ctx, param, incomplete):
     return [
         project
         for project in watson.projects
-        if project.startswith(incomplete) and project not in ctx.params.get("args", [])
+        if project.startswith(incomplete) and project not in
+        ctx.params.get("args", [])
     ]
 
 
@@ -47,11 +48,12 @@ def get_frames(ctx, param, incomplete):
     """
     watson = _bypass_click_bug_to_ensure_watson(ctx)
 
-    return [frame.id for frame in watson.frames if frame.id.startswith(incomplete)]
+    return [frame.id for frame in watson.frames if
+            frame.id.startswith(incomplete)]
 
 
 ######
-## tags and projects with -T/-p
+#  tags and projects with -T/-p
 
 
 def get_option_tags(ctx, param, incomplete):
@@ -70,12 +72,13 @@ def get_option_projects(ctx, param, incomplete):
     return [
         project
         for project in watson.projects
-        if project.startswith(incomplete) and project not in ctx.params["projects"]
+        if project.startswith(incomplete) and project not in
+        ctx.params["projects"]
     ]
 
 
 #########
-## Rename
+#  Rename
 
 
 def get_rename_types(ctx, param, incomplete):
