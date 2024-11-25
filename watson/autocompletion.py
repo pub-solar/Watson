@@ -30,7 +30,6 @@ def get_project_tag_combined(ctx, param, incomplete):
 def get_projects(ctx, param, incomplete):
     """Function to return all projects matching the prefix."""
     watson = _bypass_click_bug_to_ensure_watson(ctx)
-    # breakpoint()
     return [
         project
         for project in watson.projects
@@ -58,7 +57,6 @@ def get_frames(ctx, param, incomplete):
 
 def get_option_tags(ctx, param, incomplete):
     watson = _bypass_click_bug_to_ensure_watson(ctx)
-    # breakpoint()
     return [
         tag
         for tag in watson.tags
@@ -68,7 +66,6 @@ def get_option_tags(ctx, param, incomplete):
 
 def get_option_projects(ctx, param, incomplete):
     watson = _bypass_click_bug_to_ensure_watson(ctx)
-    # breakpoint()
     return [
         project
         for project in watson.projects
@@ -83,7 +80,6 @@ def get_option_projects(ctx, param, incomplete):
 
 def get_rename_types(ctx, param, incomplete):
     """Function to return all rename types matching the prefix."""
-    # breakpoint()
     return [
         rename_type
         for rename_type in ["project", "tag"]
