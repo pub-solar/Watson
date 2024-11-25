@@ -10,7 +10,12 @@ jobs:
   nix-flake-check:
     runs-on: ubuntu-latest
     steps:
-      - uses: nixbuild/nix-quick-install-action@v29
-      - run: nix build '.#watson-td'
-      - name: watson
-        run: ./result/bin/watson
+    - uses: actions/checkout@v4
+
+    - uses: nixbuild/nix-quick-install-action@v29
+
+    - name: build watson
+      run: nix build '.#watson-td'
+
+    - name: run watson
+      run: ./result/bin/watson
