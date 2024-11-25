@@ -1,0 +1,21 @@
+name: Nix Flake Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  nix-flake-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: nixbuild/nix-quick-install-action@v29
+
+    - name: build watson
+      run: nix build '.#watson-td'
+
+    - name: run watson
+      run: ./result/bin/watson
