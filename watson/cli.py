@@ -19,7 +19,7 @@ from .autocompletion import (
     get_rename_types,
     get_tags,
 )
-from .frames import Frame, shifted_floor
+from .frames import Frame, shifted_from
 from .utils import (
     apply_weekday_offset,
     build_csv,
@@ -1066,8 +1066,7 @@ def log(watson, current, reverse, from_, to, projects, tags, ignore_projects,
                        if _ is not None):
         from_ = start_time
 
-        if from_ == from_.floor('day'):
-            from_ = shifted_floor(from_, 'day')
+    from_ = shifted_from(from_)
 
     if from_ > to:
         raise click.ClickException("'from' must be anterior to 'to'")

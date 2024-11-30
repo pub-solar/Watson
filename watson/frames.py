@@ -21,6 +21,14 @@ def shifted_ceil(time, timeframe):
     return time.shift(hours=-hour_shift).ceil(timeframe).shift(hours=hour_shift)
 
 
+def shifted_from(from_):
+    if from_ == from_.floor('day'):
+        if arrow.now().hour < hour_shift:
+            from_ = from_.shift(days=-1)
+        from_ = from_.shift(hours=hour_shift)
+    return from_
+
+
 class Frame(namedtuple('Frame', HEADERS)):
     def __new__(cls, start, stop, project, id, tags=None, updated_at=None,):
         try:
