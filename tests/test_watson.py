@@ -29,7 +29,11 @@ def json_mock(mocker):
 # current
 
 def test_current(mocker, watson):
-    content = json.dumps({'project': 'foo', 'start': 40000, 'tags': ['A', 'B']})
+    content = json.dumps({
+        'project': 'foo',
+        'start': 40000,
+        'tags': ['A', 'B']
+    })
 
     mocker.patch('builtins.open', mocker.mock_open(read_data=content))
     assert watson.current['project'] == 'foo'
@@ -441,7 +445,8 @@ def test_save_frames_no_change(config_dir, mocker, json_mock):
 
 
 def test_save_added_frame(config_dir, mocker, json_mock):
-    watson = Watson(frames=[[40000, 40100, 'foo', None]], config_dir=config_dir)
+    watson = Watson(frames=[[40000, 40100, 'foo', None]],
+                    config_dir=config_dir)
     watson.frames.add('bar', 40100, 40200, ['A'])
 
     mocker.patch('builtins.open', mocker.mock_open())
