@@ -7,6 +7,36 @@ from collections import namedtuple
 HEADERS = ('start', 'stop', 'project', 'id', 'tags', 'updated_at')
 
 
+hour_shift = 0
+
+
+def set_hour_shift(hour):
+    global hour_shift
+    hour_shift = hour
+
+
+def shifted_floor(time, timeframe):
+    time = time.shift(hours=-hour_shift)
+    time = time.floor(timeframe)
+    time = time.shift(hours=hour_shift)
+    return time
+
+
+def shifted_ceil(time, timeframe):
+    time = time.shift(hours=-hour_shift)
+    time = time.ceil(timeframe)
+    time = time.shift(hours=hour_shift)
+    return time
+
+
+def shifted_from(from_):
+    if from_ == from_.floor('day'):
+        if arrow.now().hour < hour_shift:
+            from_ = from_.shift(days=-1)
+        from_ = from_.shift(hours=hour_shift)
+    return from_
+
+
 class Frame(namedtuple('Frame', HEADERS)):
     def __new__(cls, start, stop, project, id, tags=None, updated_at=None,):
         try:
@@ -45,7 +75,7 @@ class Frame(namedtuple('Frame', HEADERS)):
 
     @property
     def day(self):
-        return self.start.floor('day')
+        return shifted_floor(self.start, 'day')
 
     def __lt__(self, other):
         return self.start < other.start
@@ -63,8 +93,8 @@ class Frame(namedtuple('Frame', HEADERS)):
 class Span(object):
     def __init__(self, start, stop, timeframe='day'):
         self.timeframe = timeframe
-        self.start = start.floor(self.timeframe)
-        self.stop = stop.ceil(self.timeframe)
+        self.start = shifted_floor(start, self.timeframe)
+        self.stop = shifted_ceil(stop, self.timeframe)
 
     def overlaps(self, frame):
         return frame.start <= self.stop and frame.stop >= self.start

@@ -10,7 +10,7 @@ import click
 import subprocess
 
 from .config import ConfigParser
-from .frames import Frames
+from .frames import Frames, set_hour_shift, shifted_from
 from .utils import deduplicate, make_json_writer, safe_save, sorted_groupby
 from .version import version as __version__  # noqa
 
@@ -65,6 +65,8 @@ class Watson(object):
 
         if 'last_sync' in kwargs:
             self.last_sync = kwargs['last_sync']
+
+        set_hour_shift(self.config.getint('options', 'day_start_hour', 0))
 
     def _load_json_file(self, filename, type=dict):
         """
@@ -532,6 +534,8 @@ class Watson(object):
         for start_time in (_ for _ in [day, week, month, year, luna, all]
                            if _ is not None):
             from_ = start_time
+
+        from_ = shifted_from(from_)
 
         if not self._validate_report_options(projects, ignore_projects):
             raise WatsonError(
