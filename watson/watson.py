@@ -556,7 +556,7 @@ class Watson(object):
                             cur['tags'], id="current")
 
         span = self.frames.span(from_, to)
-        
+
         frames_by_project = sorted_groupby(
             self.frames.filter(
                 projects=projects or None, tags=tags or None,
