@@ -40,3 +40,7 @@ pip-log.txt
 *.sublime-workspace
 *.swp
 *.sw[po]
+
+# nix related files
+
+/result

@@ -2,6 +2,7 @@
 
 import json
 import os
+import time
 
 import arrow
 from click import get_app_dir
@@ -28,11 +29,15 @@ def json_mock(mocker):
 # current
 
 def test_current(mocker, watson):
-    content = json.dumps({'project': 'foo', 'start': 4000, 'tags': ['A', 'B']})
+    content = json.dumps({
+        'project': 'foo',
+        'start': 40000,
+        'tags': ['A', 'B']
+    })
 
     mocker.patch('builtins.open', mocker.mock_open(read_data=content))
     assert watson.current['project'] == 'foo'
-    assert watson.current['start'] == arrow.get(4000)
+    assert watson.current['start'] == arrow.get(40000)
     assert watson.current['tags'] == ['A', 'B']
 
 
@@ -57,8 +62,8 @@ def test_current_watson_non_valid_json(mocker, watson):
 
 
 def test_current_with_given_state(config_dir, mocker):
-    content = json.dumps({'project': 'foo', 'start': 4000})
-    watson = Watson(current={'project': 'bar', 'start': 4000},
+    content = json.dumps({'project': 'foo', 'start': 40000})
+    watson = Watson(current={'project': 'bar', 'start': 40000},
                     config_dir=config_dir)
 
     mocker.patch('builtins.open', mocker.mock_open(read_data=content))
@@ -66,7 +71,7 @@ def test_current_with_given_state(config_dir, mocker):
 
 
 def test_current_with_empty_given_state(config_dir, mocker):
-    content = json.dumps({'project': 'foo', 'start': 4000})
+    content = json.dumps({'project': 'foo', 'start': 40000})
     watson = Watson(current=[], config_dir=config_dir)
 
     mocker.patch('builtins.open', mocker.mock_open(read_data=content))
@@ -91,7 +96,7 @@ def test_current_as_running_frame(watson):
 # last_sync
 
 def test_last_sync(mocker, watson):
-    now = arrow.get(4123)
+    now = arrow.get(41230)
     content = json.dumps(now.int_timestamp)
 
     mocker.patch('builtins.open', mocker.mock_open(read_data=content))
@@ -138,24 +143,24 @@ def test_last_sync_with_empty_given_state(config_dir, mocker):
 # frames
 
 def test_frames(mocker, watson):
-    content = json.dumps([[4000, 4010, 'foo', None, ['A', 'B', 'C']]])
+    content = json.dumps([[40000, 40100, 'foo', None, ['A', 'B', 'C']]])
 
     mocker.patch('builtins.open', mocker.mock_open(read_data=content))
     assert len(watson.frames) == 1
     assert watson.frames[0].project == 'foo'
-    assert watson.frames[0].start == arrow.get(4000)
-    assert watson.frames[0].stop == arrow.get(4010)
+    assert watson.frames[0].start == arrow.get(40000)
+    assert watson.frames[0].stop == arrow.get(40100)
     assert watson.frames[0].tags == ['A', 'B', 'C']
 
 
 def test_frames_without_tags(mocker, watson):
-    content = json.dumps([[4000, 4010, 'foo', None]])
+    content = json.dumps([[40000, 40100, 'foo', None]])
 
     mocker.patch('builtins.open', mocker.mock_open(read_data=content))
     assert len(watson.frames) == 1
     assert watson.frames[0].project == 'foo'
-    assert watson.frames[0].start == arrow.get(4000)
-    assert watson.frames[0].stop == arrow.get(4010)
+    assert watson.frames[0].start == arrow.get(40000)
+    assert watson.frames[0].stop == arrow.get(40100)
     assert watson.frames[0].tags == []
 
 
@@ -180,8 +185,8 @@ def test_frames_watson_non_valid_json(mocker, watson):
 
 
 def test_given_frames(config_dir, mocker):
-    content = json.dumps([[4000, 4010, 'foo', None, ['A']]])
-    watson = Watson(frames=[[4000, 4010, 'bar', None, ['A', 'B']]],
+    content = json.dumps([[40000, 40100, 'foo', None, ['A']]])
+    watson = Watson(frames=[[40000, 40100, 'bar', None, ['A', 'B']]],
                     config_dir=config_dir)
 
     mocker.patch('builtins.open', mocker.mock_open(read_data=content))
@@ -414,12 +419,12 @@ def test_save_empty_current(config_dir, mocker, json_mock):
 
     mocker.patch('builtins.open', mocker.mock_open())
 
-    watson.current = {'project': 'foo', 'start': 4000}
+    watson.current = {'project': 'foo', 'start': 40000}
     watson.save()
 
     assert json_mock.call_count == 1
     result = json_mock.call_args[0][0]
-    assert result == {'project': 'foo', 'start': 4000, 'tags': []}
+    assert result == {'project': 'foo', 'start': 40000, 'tags': []}
 
     watson.current = {}
     watson.save()
@@ -430,7 +435,7 @@ def test_save_empty_current(config_dir, mocker, json_mock):
 
 
 def test_save_frames_no_change(config_dir, mocker, json_mock):
-    watson = Watson(frames=[[4000, 4010, 'foo', None]],
+    watson = Watson(frames=[[40000, 40100, 'foo', None]],
                     config_dir=config_dir)
 
     mocker.patch('builtins.open', mocker.mock_open())
@@ -440,8 +445,9 @@ def test_save_frames_no_change(config_dir, mocker, json_mock):
 
 
 def test_save_added_frame(config_dir, mocker, json_mock):
-    watson = Watson(frames=[[4000, 4010, 'foo', None]], config_dir=config_dir)
-    watson.frames.add('bar', 4010, 4020, ['A'])
+    watson = Watson(frames=[[40000, 40100, 'foo', None]],
+                    config_dir=config_dir)
+    watson.frames.add('bar', 40100, 40200, ['A'])
 
     mocker.patch('builtins.open', mocker.mock_open())
     watson.save()
@@ -456,9 +462,9 @@ def test_save_added_frame(config_dir, mocker, json_mock):
 
 
 def test_save_changed_frame(config_dir, mocker, json_mock):
-    watson = Watson(frames=[[4000, 4010, 'foo', None, ['A']]],
+    watson = Watson(frames=[[40000, 40100, 'foo', None, ['A']]],
                     config_dir=config_dir)
-    watson.frames[0] = ('bar', 4000, 4010, ['A', 'B'])
+    watson.frames[0] = ('bar', 40000, 40100, ['A', 'B'])
 
     mocker.patch('builtins.open', mocker.mock_open())
     watson.save()
@@ -562,18 +568,22 @@ def test_push(mocker, watson):
     config.set('backend', 'url', 'http://foo.com')
     config.set('backend', 'token', 'bar')
 
-    watson.frames.add('foo', 4001, 4002)
-    watson.frames.add('foo', 4003, 4004)
+    watson.frames.add('foo', 40010, 40020)
+    watson.frames.add('foo', 40030, 40040)
 
-    watson.last_sync = arrow.now()
+    time.sleep(0.01)
+    watson.last_sync = arrow.utcnow()
+    time.sleep(0.01)
 
-    watson.frames.add('bar', 4001, 4002, ['A', 'B'])
-    watson.frames.add('lol', 4001, 4002)
+    watson.frames.add('bar', 40010, 40020, ['A', 'B'])
+    watson.frames.add('lol', 40010, 40020)
 
-    last_pull = arrow.now()
+    time.sleep(0.01)
+    last_pull = arrow.utcnow()
+    time.sleep(0.01)
 
-    watson.frames.add('foo', 4001, 4002)
-    watson.frames.add('bar', 4003, 4004)
+    watson.frames.add('foo', 40010, 40020)
+    watson.frames.add('bar', 40030, 40040)
 
     mocker.patch.object(watson, '_get_remote_projects', return_value=[
         {'name': 'foo', 'id': '08288b71-4500-40dd-96b1-a995937a15fd'},
@@ -649,7 +659,7 @@ def test_pull(mocker, watson):
     watson.last_sync = arrow.now()
 
     watson.frames.add(
-        'foo', 4001, 4002, ['A', 'B'], id='1c006c6e6cc14c80ab22b51c857c0b06'
+        'foo', 40010, 40020, ['A', 'B'], id='1c006c6e6cc14c80ab22b51c857c0b06'
     )
 
     mocker.patch.object(watson, '_get_remote_projects', return_value=[
@@ -666,15 +676,15 @@ def test_pull(mocker, watson):
                 {
                     'id': '1c006c6e-6cc1-4c80-ab22-b51c857c0b06',
                     'project': 'foo',
-                    'begin_at': 4003,
-                    'end_at': 4004,
+                    'begin_at': 40030,
+                    'end_at': 40040,
                     'tags': ['A']
                 },
                 {
                     'id': 'c44aa815-4d77-4a58-bddd-1afa95562141',
                     'project': 'bar',
-                    'begin_at': 4004,
-                    'end_at': 4005,
+                    'begin_at': 40040,
+                    'end_at': 40050,
                     'tags': []
                 }
             ]
@@ -698,14 +708,14 @@ def test_pull(mocker, watson):
 
     assert watson.frames[0].id == '1c006c6e6cc14c80ab22b51c857c0b06'
     assert watson.frames[0].project == 'foo'
-    assert watson.frames[0].start.int_timestamp == 4001
-    assert watson.frames[0].stop.int_timestamp == 4002
+    assert watson.frames[0].start.int_timestamp == 40010
+    assert watson.frames[0].stop.int_timestamp == 40020
     assert watson.frames[0].tags == ['A', 'B']
 
     assert watson.frames[1].id == 'c44aa8154d774a58bddd1afa95562141'
     assert watson.frames[1].project == 'bar'
-    assert watson.frames[1].start.int_timestamp == 4004
-    assert watson.frames[1].stop.int_timestamp == 4005
+    assert watson.frames[1].start.int_timestamp == 40040
+    assert watson.frames[1].stop.int_timestamp == 40050
     assert watson.frames[1].tags == []
 
 
@@ -713,7 +723,7 @@ def test_pull(mocker, watson):
 
 def test_projects(watson):
     for name in ('foo', 'bar', 'bar', 'bar', 'foo', 'lol'):
-        watson.frames.add(name, 4000, 4000)
+        watson.frames.add(name, 40000, 40000)
 
     assert watson.projects == ['bar', 'foo', 'lol']
 
@@ -734,7 +744,7 @@ def test_tags(watson):
     )
 
     for name, tags in samples:
-        watson.frames.add(name, 4000, 4000, tags)
+        watson.frames.add(name, 40000, 40000, tags)
 
     assert watson.tags == ['A', 'B', 'C', 'D']
 
@@ -750,8 +760,8 @@ def test_tags_no_frames(watson):
     )
 def test_merge_report(watson, datafiles):
     # Get report
-    watson.frames.add('foo', 4000, 4015, id='1', updated_at=4015)
-    watson.frames.add('bar', 4020, 4045, id='2', updated_at=4045)
+    watson.frames.add('foo', 40000, 40150, id='1', updated_at=40150)
+    watson.frames.add('bar', 40200, 40450, id='2', updated_at=40450)
 
     conflicting, merging = watson.merge_report(
         str(datafiles) + '/frames-with-conflict')
@@ -823,10 +833,10 @@ def test_report(watson):
 
 
 def test_report_current(mocker, config_dir):
-    mocker.patch('arrow.utcnow', return_value=arrow.get(5000))
+    mocker.patch('arrow.utcnow', return_value=arrow.get(50000))
 
     watson = Watson(
-        current={'project': 'foo', 'start': 4000},
+        current={'project': 'foo', 'start': 40000},
         config_dir=config_dir
     )
 
@@ -836,7 +846,7 @@ def test_report_current(mocker, config_dir):
         )
     assert len(report['projects']) == 1
     assert report['projects'][0]['name'] == 'foo'
-    assert report['projects'][0]['time'] == pytest.approx(1000)
+    assert report['projects'][0]['time'] == pytest.approx(10000)
 
     report = watson.report(
         arrow.utcnow(), arrow.utcnow(), current=False, projects=['foo']
@@ -890,12 +900,12 @@ def test_rename_project_with_time(watson):
     contains that project.
     """
     watson.frames.add(
-        'foo', 4001, 4002, ['some_tag'],
-        id='c76d1ad0282c429595cc566d7098c165', updated_at=4005
+        'foo', 40010, 40020, ['some_tag'],
+        id='c76d1ad0282c429595cc566d7098c165', updated_at=40050
     )
     watson.frames.add(
-        'bar', 4010, 4015, ['other_tag'],
-        id='eed598ff363d42658a095ae6c3ae1088', updated_at=4035
+        'bar', 40100, 40150, ['other_tag'],
+        id='eed598ff363d42658a095ae6c3ae1088', updated_at=40350
     )
 
     watson.rename_project("foo", "baz")
@@ -904,18 +914,18 @@ def test_rename_project_with_time(watson):
 
     assert watson.frames[0].id == 'c76d1ad0282c429595cc566d7098c165'
     assert watson.frames[0].project == 'baz'
-    assert watson.frames[0].start.int_timestamp == 4001
-    assert watson.frames[0].stop.int_timestamp == 4002
+    assert watson.frames[0].start.int_timestamp == 40010
+    assert watson.frames[0].stop.int_timestamp == 40020
     assert watson.frames[0].tags == ['some_tag']
     # assert watson.frames[0].updated_at.int_timestamp == 9000
-    assert watson.frames[0].updated_at.int_timestamp > 4005
+    assert watson.frames[0].updated_at.int_timestamp > 40050
 
     assert watson.frames[1].id == 'eed598ff363d42658a095ae6c3ae1088'
     assert watson.frames[1].project == 'bar'
-    assert watson.frames[1].start.int_timestamp == 4010
-    assert watson.frames[1].stop.int_timestamp == 4015
+    assert watson.frames[1].start.int_timestamp == 40100
+    assert watson.frames[1].stop.int_timestamp == 40150
     assert watson.frames[1].tags == ['other_tag']
-    assert watson.frames[1].updated_at.int_timestamp == 4035
+    assert watson.frames[1].updated_at.int_timestamp == 40350
 
 
 def test_rename_tag_with_time(watson):
@@ -924,12 +934,12 @@ def test_rename_tag_with_time(watson):
     contains that tag.
     """
     watson.frames.add(
-        'foo', 4001, 4002, ['some_tag'],
-        id='c76d1ad0282c429595cc566d7098c165', updated_at=4005
+        'foo', 40010, 40020, ['some_tag'],
+        id='c76d1ad0282c429595cc566d7098c165', updated_at=40050
     )
     watson.frames.add(
-        'bar', 4010, 4015, ['other_tag'],
-        id='eed598ff363d42658a095ae6c3ae1088', updated_at=4035
+        'bar', 40100, 40150, ['other_tag'],
+        id='eed598ff363d42658a095ae6c3ae1088', updated_at=40350
     )
 
     watson.rename_tag("other_tag", "baz")
@@ -938,18 +948,18 @@ def test_rename_tag_with_time(watson):
 
     assert watson.frames[0].id == 'c76d1ad0282c429595cc566d7098c165'
     assert watson.frames[0].project == 'foo'
-    assert watson.frames[0].start.int_timestamp == 4001
-    assert watson.frames[0].stop.int_timestamp == 4002
+    assert watson.frames[0].start.int_timestamp == 40010
+    assert watson.frames[0].stop.int_timestamp == 40020
     assert watson.frames[0].tags == ['some_tag']
-    assert watson.frames[0].updated_at.int_timestamp == 4005
+    assert watson.frames[0].updated_at.int_timestamp == 40050
 
     assert watson.frames[1].id == 'eed598ff363d42658a095ae6c3ae1088'
     assert watson.frames[1].project == 'bar'
-    assert watson.frames[1].start.int_timestamp == 4010
-    assert watson.frames[1].stop.int_timestamp == 4015
+    assert watson.frames[1].start.int_timestamp == 40100
+    assert watson.frames[1].stop.int_timestamp == 40150
     assert watson.frames[1].tags == ['baz']
     # assert watson.frames[1].updated_at.int_timestamp == 9000
-    assert watson.frames[1].updated_at.int_timestamp > 4035
+    assert watson.frames[1].updated_at.int_timestamp > 40350
 
 # add
 
@@ -959,7 +969,7 @@ def test_add_success(watson):
     Adding a new frame outside of live tracking successfully
     """
     watson.add(project="test_project", tags=['fuu', 'bar'],
-               from_date=6000, to_date=7000)
+               from_date=60000, to_date=70000)
 
     assert len(watson.frames) == 1
     assert watson.frames[0].project == "test_project"
@@ -973,7 +983,7 @@ def test_add_failure(watson):
     """
     with pytest.raises(WatsonError):
         watson.add(project="test_project", tags=['fuu', 'bar'],
-                   from_date=7000, to_date=6000)
+                   from_date=70000, to_date=60000)
 
 
 def test_validate_report_options(watson):

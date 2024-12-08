@@ -13,11 +13,12 @@ from click_didyoumean import DYMGroup
 import watson as _watson
 from .autocompletion import (
     get_frames,
-    get_project_or_task_completion,
-    get_projects,
-    get_rename_name,
+    get_option_tags,
+    get_project_tag_combined,
+    get_option_projects,
+    get_rename_new_name,
+    get_rename_old_name,
     get_rename_types,
-    get_tags,
 )
 from .frames import Frame, shifted_from
 from .utils import (
@@ -204,7 +205,7 @@ def _start(watson, project, tags, restart=False, start_at=None, gap=True):
               help=("(Don't) leave gap between end time of previous project "
                     "and start time of the current."))
 @click.argument('args', nargs=-1,
-                shell_complete=get_project_or_task_completion)
+                shell_complete=get_project_tag_combined)
 @click.option('-c', '--confirm-new-project', is_flag=True, default=False,
               help="Confirm addition of new project.")
 @click.option('-b', '--confirm-new-tag', is_flag=True, default=False,
@@ -514,14 +515,14 @@ _SHORTCUT_OPTIONS_VALUES = {
               flag_value=_SHORTCUT_OPTIONS_VALUES['all'],
               mutually_exclusive=['day', 'week', 'month', 'luna', 'year'],
               help='Reports all activities.')
-@click.option('-p', '--project', 'projects', shell_complete=get_projects,
-              multiple=True,
+@click.option('-p', '--project', 'projects',
+              shell_complete=get_option_projects, multiple=True,
               help="Reports activity only for the given project. You can add "
               "other projects by using this option several times.")
-@click.option('-T', '--tag', 'tags', shell_complete=get_tags, multiple=True,
-              help="Reports activity only for frames containing the given "
-              "tag. You can add several tags by using this option multiple "
-              "times")
+@click.option('-T', '--tag', 'tags', shell_complete=get_option_tags,
+              multiple=True, help="Reports activity only for frames containing"
+              "the given tag. You can add several tags by using this option "
+              "multiple times")
 @click.option('--ignore-project', 'ignore_projects', multiple=True,
               help="Reports activity for all projects but the given ones. You "
               "can ignore several projects by using the option multiple "
@@ -784,11 +785,12 @@ def report(watson, current, from_, to, projects, tags, ignore_projects,
 @click.option('-m', '--monthly', 'aggregation', cls=MutuallyExclusiveOption,
               flag_value='monthly', mutually_exclusive=['daily', 'weekly'],
               help="Aggregate time frames by month")
-@click.option('-p', '--project', 'projects', shell_complete=get_projects,
-              multiple=True,
+@click.option('-p', '--project', 'projects',
+              shell_complete=get_option_projects, multiple=True,
               help="Reports activity only for the given project. You can add "
               "other projects by using this option several times.")
-@click.option('-T', '--tag', 'tags', shell_complete=get_tags, multiple=True,
+@click.option('-T', '--tag', 'tags', shell_complete=get_option_tags,
+              multiple=True,
               help="Reports activity only for frames containing the given "
               "tag. You can add several tags by using this option multiple "
               "times")
@@ -967,11 +969,12 @@ def aggregate(ctx, watson, current, from_, to, projects, tags, output_format,
               flag_value=_SHORTCUT_OPTIONS_VALUES['all'],
               mutually_exclusive=['day', 'week', 'month', 'year'],
               help='Reports all activities.')
-@click.option('-p', '--project', 'projects', shell_complete=get_projects,
-              multiple=True,
+@click.option('-p', '--project', 'projects',
+              shell_complete=get_option_projects, multiple=True,
               help="Logs activity only for the given project. You can add "
               "other projects by using this option several times.")
-@click.option('-T', '--tag', 'tags', shell_complete=get_tags, multiple=True,
+@click.option('-T', '--tag', 'tags', shell_complete=get_option_tags,
+              multiple=True,
               help="Logs activity only for frames containing the given "
               "tag. You can add several tags by using this option multiple "
               "times")
@@ -1235,7 +1238,7 @@ def frames(watson):
 
 @cli.command(context_settings={'ignore_unknown_options': True})
 @click.argument('args', nargs=-1,
-                shell_complete=get_project_or_task_completion)
+                shell_complete=get_project_tag_combined)
 @click.option('-f', '--from', 'from_', required=True, type=DateTime,
               help="Date and time of start of tracked activity")
 @click.option('-t', '--to', required=True, type=DateTime,
@@ -1722,8 +1725,8 @@ def merge(watson, frames_with_conflict, force):
 @cli.command()
 @click.argument('rename_type', required=True, metavar='TYPE',
                 shell_complete=get_rename_types)
-@click.argument('old_name', required=True, shell_complete=get_rename_name)
-@click.argument('new_name', required=True, shell_complete=get_rename_name)
+@click.argument('old_name', required=True, shell_complete=get_rename_old_name)
+@click.argument('new_name', required=True, shell_complete=get_rename_new_name)
 @click.pass_obj
 @catch_watson_error
 def rename(watson, rename_type, old_name, new_name):
