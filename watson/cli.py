@@ -1534,9 +1534,10 @@ def config(context, key, value, edit):
 
 
 @cli.command()
+@click.option('-l', '--force-local', is_flag=True, help="Force local will overwrite server")
 @click.pass_obj
 @catch_watson_error
-def sync(watson):
+def sync(watson, force_local):
     """
     Get the frames from the server and push the new ones.
 
@@ -1556,8 +1557,9 @@ def sync(watson):
     Pushed 23 frames to the server
     """
     last_pull = arrow.utcnow()
-    pulled = watson.pull()
-    click.secho(f'Received {pulled} frames from the server.', fg='green')
+    if not force_local:
+        pulled = watson.pull()
+        click.secho(f'Received {pulled} frames from the server.', fg='green')
 
     pushed = watson.push(last_pull)
     click.secho(f'Pushed {pushed} frames to the server.', fg='green')
